@@ -7,8 +7,12 @@
   </head>
   <body>
     <form action="/results" method="post">
-             Speed:<input type="text" name="speed">
-          /   Distance:<input type="text" name="distance">
+      <label for="dis">Distance:</labal>
+             <input type="text" name="speed" id="dis" placeholder="1.871"
+             maxlength="6" required>
+             <label for="spe">/ Speed:</labal>
+             <input type="text" name="distance" id="spe" placeholder="3.476"
+             maxlength="6" required>
              <input type="submit" value="Result">
          </form>
   </body>
