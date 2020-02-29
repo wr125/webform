@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"gopkg.in/go-playground/validator.v9"
+
 )
 
 var tpl *template.Template
@@ -15,23 +17,18 @@ func init() {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		log.Fatal(err)
-	}
-	for key, value := range r.Form {
-		fmt.Printf("%s\n %v\n", key, value)
-	}
+
+
 
 	tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
-type car struct {
-	Speed    float64
-	Distance float64
+type Car struct {
+	Speed    float64 `validate:"required"`
+	Distance float64 `validate:"required"`
 }
 
-func (c car) Acceleration() float64 {
+func (c Car) Acceleration() float64 {
 	return c.Speed / c.Distance
 }
 
@@ -51,9 +48,15 @@ func results(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	var validate *validator.Validate
 
-	car := car{Speed: speed, Distance: distance}
+	car := Car{Speed: speed, Distance: distance}
 
+	validate = validator.New()
+		err = validate.Struct(car)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+		}
 	tpl.ExecuteTemplate(w, "results.html", car)
 
 }
